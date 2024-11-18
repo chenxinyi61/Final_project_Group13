@@ -1,0 +1,81 @@
+---
+title: "final project"
+format: html
+---
+
+
+```{python}
+import pandas as pd
+import os
+
+# Directory containing all the files
+directory = '/Users/sara/Desktop/Python/final project/Final_project_Group13/Data'
+
+# List of files to process
+file_list = [
+    "table14full13.xlsx", "table14full14.xlsx", "table14full15.xlsx",
+    "table14full16.xlsx", "table14full17.xlsx", "table14full18.xlsx",
+    "table14full19.xlsx", "table14full20.xlsx", "table14full21.xlsx",
+    "table14full22.xlsx", "table14full23.xlsx"
+]
+
+# List to store DataFrames
+all_data = []
+
+# List of yellow-highlighted groups
+yellow_highlighted_groups = ["White", "Black or African American", "Hispanic or Latino ethnicity"]
+
+# Loop through each file
+for file_name in file_list:
+    # Extract year from the file name (e.g., "2013" from "table14full13.xlsx")
+    year = file_name.replace("table14full", "").replace(".xlsx", "")
+    
+    # Load the Excel file
+    file_path = os.path.join(directory, file_name)
+    excel_file = pd.ExcelFile(file_path)
+    
+    # Use the first sheet name (assuming there's only one sheet per file)
+    sheet_name = excel_file.sheet_names[0]
+    
+    # Load the sheet into a DataFrame
+    df = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=5)
+    
+    # Dynamically rename columns based on the number of columns detected
+    column_count = len(df.columns)
+    if column_count == 14:
+        df.columns = [
+            "FIPS_State_Code", "Group_Code", "State", "Group", 
+            "Population", "Labor_Force", "Employment_Percentage", 
+            "Number_Employed", "Population_Percentage", "Unemployment_Number", 
+            "Unemployment_Rate", "Error_Range", "Extra1", "Extra2"
+        ]
+    elif column_count == 12:
+        df.columns = [
+            "FIPS_State_Code", "Group_Code", "State", "Group", 
+            "Population", "Labor_Force", "Employment_Percentage", 
+            "Number_Employed", "Population_Percentage", "Unemployment_Number", 
+            "Unemployment_Rate", "Error_Range"
+        ]
+    else:
+        raise ValueError(f"Unexpected number of columns ({column_count}) in file {file_name}")
+    
+    # Filter for relevant groups
+    filtered_data = df[df["Group"].isin(yellow_highlighted_groups)]
+    
+    # Add year column
+    filtered_data["Year"] = year
+    
+    # Select relevant columns and add to list
+    all_data.append(filtered_data[["State", "Group", "Unemployment_Rate", "Year"]])
+
+# Combine all data into a single DataFrame
+final_data = pd.concat(all_data, ignore_index=True)
+
+# Save to a new Excel file
+output_file = os.path.join(directory, "consolidated_filtered_data.xlsx")
+final_data.to_excel(output_file, index=False)
+```
+
+```{python}
+print(final_data.head())
+```
