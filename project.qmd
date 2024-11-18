@@ -72,10 +72,60 @@ for file_name in file_list:
 final_data = pd.concat(all_data, ignore_index=True)
 
 # Save to a new Excel file
-output_file = os.path.join(directory, "consolidated_filtered_data.xlsx")
+output_file = os.path.join(directory, "unemployment_race_filtered_data.xlsx")
 final_data.to_excel(output_file, index=False)
 ```
 
 ```{python}
 print(final_data.head())
+```
+
+
+### clean unemployment rate by state by year
+
+
+```{python}
+import pandas as pd
+
+# Load the Excel file into a DataFrame
+file_path = '/Users/sara/Desktop/Python/final project/Final_project_Group13/Data/State_unemployment_rates.xlsx'
+
+# Read the Excel file
+df_unemployment = pd.read_excel(file_path, sheet_name='Sheet1')
+
+# Set "State" as the index for easier manipulation
+df_unemployment.set_index("State", inplace=True)
+
+# Transpose the dataset to make months easier to process
+df_unemployment = df_unemployment.transpose()
+
+# Convert the index to datetime for filtering
+df_unemployment.index = pd.to_datetime(df_unemployment.index)
+
+# Filter for December data and September 2024
+df_december = df_unemployment[df_unemployment.index.month == 12]
+df_sep_2024 = df_unemployment[(df_unemployment.index.year == 2024) & (df_unemployment.index.month == 9)]
+
+# Convert December index to year for easier understanding
+df_december.index = df_december.index.year
+
+# Add September 2024 data to the December dataset with year set as 2024
+if not df_sep_2024.empty:
+    df_sep_2024.index = [2024]
+    df_december = pd.concat([df_december, df_sep_2024])
+
+# Transpose back to make states as columns for final presentation
+df_december = df_december.transpose()
+
+# Reset the index and rename the columns
+df_december.reset_index(inplace=True)
+df_december.rename(columns={"index": "State"}, inplace=True)
+
+# Save the processed data to a new Excel file
+output_file = '/Users/sara/Desktop/Python/final project/Final_project_Group13/Data/Filtered_Unemployment_Data.xlsx'
+df_december.to_excel(output_file, index=False)
+
+print(f"Filtered unemployment rates (including Sep-24) saved to {output_file}")
+
+
 ```
