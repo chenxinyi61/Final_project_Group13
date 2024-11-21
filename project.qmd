@@ -129,3 +129,15 @@ print(f"Filtered unemployment rates (including Sep-24) saved to {output_file}")
 
 
 ```
+
+
+```{python}
+import pandas as pd
+
+unemployment_rate = pd.read_excel('./Data/Filtered_Unemployment_Data.xlsx')
+
+min_wage = pd.read_excel('./Data/Min_wage.xlsx')
+
+unemployment_rate_race = pd.read_excel('./Data/unemployment_race_filtered_data.xlsx')
+
+```
