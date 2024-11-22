@@ -130,7 +130,7 @@ print(f"Filtered unemployment rates (including Sep-24) saved to {output_file}")
 
 ```
 
-
+# Import data
 ```{python}
 import pandas as pd
 
@@ -139,5 +139,45 @@ unemployment_rate = pd.read_excel('./Data/Filtered_Unemployment_Data.xlsx')
 min_wage = pd.read_excel('./Data/Min_wage.xlsx')
 
 unemployment_rate_race = pd.read_excel('./Data/unemployment_race_filtered_data.xlsx')
+```
+
+
+```{python}
+min_wage_long = min_wage.melt(id_vars=['State'], var_name='Year', value_name='Min_Wage')
+
+min_wage_long['Min_Wage'] = min_wage_long['Min_Wage'].astype(float)
+
+unemployment_rate_long = unemployment_rate.melt(id_vars=['State'], var_name='Year', value_name='Unemployment_Rate')
+
+merged_data = pd.merge(min_wage_long, unemployment_rate_long, on=['State', 'Year'])
+
+# Calculate the year-over-year change in minimum wage
+min_wage_long['Min_Wage_Change'] = min_wage_long.groupby('State')['Min_Wage'].diff().ne(0)
+
+# Filter states where the minimum wage changed
+states_with_changes = min_wage_long[min_wage_long['Min_Wage_Change']].drop_duplicates(subset='State')
+
+# Get the list of states with minimum wage changes
+states_with_changes_list = states_with_changes['State'].tolist()
+
+# Filter the merged data for these states
+final_data = merged_data[merged_data['State'].isin(states_with_changes_list)]
+
+import altair as alt
+
+# Create the Altair chart
+chart = alt.Chart(final_data).mark_line(point=True).encode(
+    x='Year:O',  # x-axis as categorical (ordinal) years
+    y='Unemployment_Rate:Q',  # y-axis as quantitative (numerical) unemployment rate
+    color='State:N',  # Color by State to differentiate lines
+    tooltip=['State', 'Year', 'Unemployment_Rate']  # Add tooltip to show details on hover
+).properties(
+    title='Unemployment Rate Change for States with Minimum Wage Changes (2014-2024)',
+    width=800,
+    height=400
+)
+
+# Show the chart
+chart.show()
 
 ```
