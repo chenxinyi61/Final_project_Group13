@@ -183,7 +183,7 @@ chart.show()
 ```
 
 
-### TOP 10 varaicne of unemployment rate state
+### TOP 10 varaicne of minimum wage state
 
 ```{python}
 min_wage_long = min_wage.melt(id_vars=['State'], var_name='Year', value_name='Min_Wage')
@@ -192,12 +192,12 @@ unemployment_rate_long = unemployment_rate.melt(id_vars=['State'], var_name='Yea
 # Merge the dataframes
 merged_data = pd.merge(min_wage_long, unemployment_rate_long, on=['State', 'Year'])
 
-# Calculate variance in unemployment rate for each state
+# Calculate variance in Min_Wage for each state
 state_variance = (
-    merged_data.groupby('State')['Unemployment_Rate']
+    merged_data.groupby('State')['Min_Wage']
     .var()
     .reset_index()
-    .rename(columns={'Unemployment_Rate': 'Variance'})
+    .rename(columns={'Min_Wage': 'Variance'})
 )
 
 # Get the top 10 states with the highest variance
@@ -213,12 +213,80 @@ chart = alt.Chart(filtered_data).mark_line(point=True).encode(
     color='State:N',  # Color by State to differentiate lines
     tooltip=['State', 'Year', 'Unemployment_Rate']  # Add tooltip to show details on hover
 ).properties(
-    title='Unemployment Rate Change for Top 10 States with Highest Variance (2014-2024)',
+    title='Unemployment Rate Change for Top 10 States with Highest Variance of minimum wage (2014-2024)',
     width=800,
     height=400
 )
 
 # Show the chart
 chart.show()
+```
 
+
+```{python}
+# Filter the merged data for these states
+filtered_data = merged_data[merged_data['State'].isin(top_states)]
+
+chart = alt.Chart(filtered_data).mark_line(point=True).encode(
+    x=alt.X('Min_Wage:Q', scale=alt.Scale(zero=False), title='Minimum Wage'),  # x-axis without starting at zero
+    y=alt.Y('Unemployment_Rate:Q', scale=alt.Scale(), title='Unemployment Rate'),  # y-axis without starting at zero
+    color='State:N',  # Color by State to differentiate lines
+    tooltip=['State', 'Year', 'Min_Wage', 'Unemployment_Rate']  # Tooltip for more details
+).properties(
+    title='Unemployment Rate vs. Minimum Wage (Top 20 States with Highest Variance)',
+    width=500,
+    height=400
+)
+
+# Show the chart
+chart.show()
+```
+
+## exclude 2020
+
+
+```{python}
+# Exclude 2020 from the data
+filtered_data_no_2020 = filtered_data[filtered_data['Year'] != 2020]
+
+# Create the updated line chart without 2020
+chart_no_2020 = alt.Chart(filtered_data_no_2020).mark_line(point=True).encode(
+    x=alt.X('Min_Wage:Q', scale=alt.Scale(zero=False), title='Minimum Wage'),
+    y=alt.Y('Unemployment_Rate:Q', scale=alt.Scale(zero=False), title='Unemployment Rate'),
+    color='State:N',
+    tooltip=['State', 'Year', 'Min_Wage', 'Unemployment_Rate']
+).properties(
+    title='Unemployment Rate vs. Minimum Wage (Excluding 2020)',
+    width=800,
+    height=400
+)
+
+# Show the chart
+chart_no_2020.show()
+
+```
+
+### regression 
+
+
+```{python}
+chart_with_regression = alt.Chart(filtered_data_no_2020).mark_circle(size=50, opacity=0.6).encode(
+    x=alt.X('Min_Wage:Q', scale=alt.Scale(zero=False), title='Minimum Wage'),
+    y=alt.Y('Unemployment_Rate:Q', scale=alt.Scale(zero=False), title='Unemployment Rate'),
+    color='State:N',
+    tooltip=['State', 'Year', 'Min_Wage', 'Unemployment_Rate']
+).properties(
+    width=500,
+    height=300
+) + alt.Chart(filtered_data_no_2020).transform_regression(
+    'Min_Wage', 'Unemployment_Rate', method='linear'
+).mark_line(color='black').encode(
+    x='Min_Wage:Q',
+    y='Unemployment_Rate:Q'
+).properties(
+    title='Unemployment Rate vs. Minimum Wage (Regression Line Included)'
+)
+
+# Show the chart
+chart_with_regression.show()
 ```
