@@ -244,7 +244,6 @@ chart.show()
 
 ## exclude 2020
 
-
 ```{python}
 # Exclude 2020 from the data
 filtered_data_no_2020 = filtered_data[filtered_data['Year'] != 2020]
@@ -266,8 +265,7 @@ chart_no_2020.show()
 
 ```
 
-### regression 
-
+### regression with no 2020
 
 ```{python}
 chart_with_regression = alt.Chart(filtered_data_no_2020).mark_circle(size=50, opacity=0.6).encode(
@@ -289,4 +287,62 @@ chart_with_regression = alt.Chart(filtered_data_no_2020).mark_circle(size=50, op
 
 # Show the chart
 chart_with_regression.show()
+```
+
+
+
+# Next graph:race and state
+
+### merge data 
+```{python}
+# Convert Year to integer for merging consistency
+min_wage_long['Year'] = min_wage_long['Year'].astype(int)
+
+# Filter unemployment data for years 2014-2023
+unemployment_filtered = unemployment_rate_race[
+    (unemployment_rate_race['Year'] >= 2014) & (unemployment_rate_race['Year'] <= 2023)
+]
+
+# Merge the datasets on State and Year
+merged_race_data = pd.merge(
+    unemployment_filtered, 
+    min_wage_long, 
+    on=['State', 'Year'], 
+    how='inner'
+)
+
+# Display the first few rows of the merged dataset
+print(merged_race_data.head())
+```
+
+### select one state to see trend and difference
+
+```{python}
+selected_state = "Arizona"
+state_data = merged_race_data[merged_race_data["State"] == selected_state]
+
+# Create the Altair scatter plot
+chart = alt.Chart(state_data).mark_circle(size=100).encode(
+    x=alt.X('Min_Wage:Q', title='Minimum Wage ($)'),
+    y=alt.Y('Unemployment_Rate:Q', title='Unemployment Rate (%)'),
+    color=alt.Color('Group:N', title='Race'),
+    tooltip=['Year', 'Unemployment_Rate', 'Min_Wage', 'Group']
+).properties(
+    title=f"Unemployment Rate vs Minimum Wage for {selected_state}",
+    width=400,
+    height=300
+)
+
+regression_lines = alt.Chart(state_data).transform_regression(
+    'Min_Wage', 'Unemployment_Rate', groupby=['Group']
+).mark_line().encode(
+    x=alt.X('Min_Wage:Q',scale=alt.Scale(zero=False),title='Minimum Wage ($)'),
+    y=alt.Y('Unemployment_Rate:Q', title='Unemployment Rate (%)'),
+    color=alt.Color('Group:N', title='Race')
+)
+
+# Scatter plot with regression lines
+combined_chart = chart + regression_lines
+
+combined_chart.show()
 ```
