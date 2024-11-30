@@ -173,6 +173,47 @@ chart = alt.Chart(final_data).mark_line(point=True).encode(
     tooltip=['State', 'Year', 'Unemployment_Rate']  # Add tooltip to show details on hover
 ).properties(
     title='Unemployment Rate Change for States with Minimum Wage Changes (2014-2024)',
+    width=500,
+    height=300
+)
+
+# Show the chart
+chart.show()
+
+```
+
+
+### TOP 10 varaicne of unemployment rate state
+
+```{python}
+min_wage_long = min_wage.melt(id_vars=['State'], var_name='Year', value_name='Min_Wage')
+unemployment_rate_long = unemployment_rate.melt(id_vars=['State'], var_name='Year', value_name='Unemployment_Rate')
+
+# Merge the dataframes
+merged_data = pd.merge(min_wage_long, unemployment_rate_long, on=['State', 'Year'])
+
+# Calculate variance in unemployment rate for each state
+state_variance = (
+    merged_data.groupby('State')['Unemployment_Rate']
+    .var()
+    .reset_index()
+    .rename(columns={'Unemployment_Rate': 'Variance'})
+)
+
+# Get the top 10 states with the highest variance
+top_states = state_variance.nlargest(10, 'Variance')['State']
+
+# Filter the merged data for these states
+filtered_data = merged_data[merged_data['State'].isin(top_states)]
+
+# Create the Altair chart
+chart = alt.Chart(filtered_data).mark_line(point=True).encode(
+    x='Year:O',  # x-axis as categorical (ordinal) years
+    y='Unemployment_Rate:Q',  # y-axis as quantitative (numerical) unemployment rate
+    color='State:N',  # Color by State to differentiate lines
+    tooltip=['State', 'Year', 'Unemployment_Rate']  # Add tooltip to show details on hover
+).properties(
+    title='Unemployment Rate Change for Top 10 States with Highest Variance (2014-2024)',
     width=800,
     height=400
 )
