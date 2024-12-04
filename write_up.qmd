@@ -89,7 +89,7 @@ The Shiny app integrates these visualizations, enabling users to dynamically com
 
 Our analysis suggests that increases in minimum wage are generally associated with a decrease in unemployment rates. However, the magnitude and direction of this relationship vary by state and demographic group. Key findings include:
 
-- **Demographic Differences**: The unemployment rate is typically lower for White individuals. However, changes in minimum wage have a more pronounced effect on unemployment rates for Black and Hispanic/Latino populations.
+- **Demographic Differences**: The unemployment rate is typically lower for White individuals. However, changes in minimum wage have a more pronounced effect on unemployment rates for Black or African American populations.
 - **Policy Frequency**: States with frequent changes in minimum wage policies exhibited more significant impacts on unemployment rates, suggesting that policy consistency may influence economic outcomes.
 
 ### Policy Implications
@@ -105,6 +105,6 @@ Our analysis suggests that increases in minimum wage are generally associated wi
 
 # Conclusion
 
-This project examines the relationship between minimum wage changes and unemployment rates in the U.S. from 2014 to 2024, emphasizing demographic and state-level variations. Our findings indicate a generally negative correlation between minimum wage increases and unemployment rates, with more pronounced effects on Black and Hispanic/Latino populations compared to White individuals. States with frequent policy changes demonstrated more noticeable impacts.
+This project examines the relationship between minimum wage changes and unemployment rates in the U.S. from 2014 to 2024, emphasizing demographic and state-level variations. Our findings indicate a generally negative correlation between minimum wage increases and unemployment rates, with more pronounced effects on Black and Afircan American populations compared to White individuals. States with frequent policy changes demonstrated more noticeable impacts.
 
 These insights highlight the importance of designing wage policies that address regional and demographic disparities. Future research should investigate long-term trends, regional disparities, and the effects on vulnerable populations, employing advanced techniques like machine learning for enhanced predictive analyses.
