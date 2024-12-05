@@ -46,6 +46,6 @@ def server(input, output, session):
         
         combined_chart = chart + regression_lines
         
-        return ui.HTML(combined_chart.to_html())
+        return ui.HTML(combined_chart.to_html()) # we has problem showing the plot, chatGPT helped us debugged with this code
 
 app = App(app_ui, server)
