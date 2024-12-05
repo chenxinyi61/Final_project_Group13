@@ -10,6 +10,7 @@ format: html
 import pandas as pd
 import os
 
+# Change directory for reproduce work
 directory = './Data'
 
 file_list = [
@@ -34,6 +35,7 @@ for file_name in file_list:
     sheet_name = excel_file.sheet_names[0]
 
     df = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=5)
+
 # Asked chatGPT how to extract certain rows from the Excel
     column_count = len(df.columns)
     if column_count == 14:
@@ -145,6 +147,9 @@ states_with_changes = min_wage_long[min_wage_long['Min_Wage_Change']].drop_dupli
     subset='State')
 states_with_changes_list = states_with_changes['State'].tolist()
 
+# reference: convert a series to list
+# https://www.geeksforgeeks.org/python-pandas-series-tolist/
+
 final_data = merged_data[merged_data['State'].isin(states_with_changes_list)]
 
 chart = alt.Chart(final_data).mark_line(point=True).encode(
@@ -171,6 +176,9 @@ state_variance = (
     .reset_index()
     .rename(columns={'Min_Wage': 'Variance'})
 )
+
+# Calculates the variance:
+# reference: https://www.codecademy.com/resources/docs/numpy/built-in-functions/variance
 
 top_states = state_variance.nlargest(10, 'Variance')['State']
 
@@ -303,6 +311,8 @@ regression_lines = alt.Chart(state_data).transform_regression(
     color=alt.Color('Group:N', title='Race')
 )
 
+# reference of add regression line:
+# https://altair-viz.github.io/user_guide/transform/regression.html 
 combined_chart = chart + regression_lines
 
 combined_chart.show()
