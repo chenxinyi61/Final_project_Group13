@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Group 13: Xinyi Chen &amp; Ben Zhang (Section 1)">
+<meta name="dcterms.date" content="2024-12-04">
+
+<title>Group13_final_project_writeup</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="write_up_files/libs/clipboard/clipboard.min.js"></script>
+<script src="write_up_files/libs/quarto-html/quarto.js"></script>
+<script src="write_up_files/libs/quarto-html/popper.min.js"></script>
+<script src="write_up_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="write_up_files/libs/quarto-html/anchor.min.js"></script>
+<link href="write_up_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="write_up_files/libs/quarto-html/quarto-syntax-highlighting-2486e1f0a3ee9ee1fc393803a1361cdb.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="write_up_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="write_up_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="write_up_files/libs/bootstrap/bootstrap-677b520d69fcc55ab41b4b425631e74d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Group13_final_project_writeup</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Group 13: Xinyi Chen &amp; Ben Zhang (Section 1) </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 4, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>GitHub Usernames:</strong> chenxinyi61 &amp; Tribull369</p>
+<section id="research-question" class="level1">
+<h1>Research Question</h1>
+<p>This study investigates the relationship between changes in state minimum wages and unemployment rates across the United States during the period from 2014 to 2024. Specifically, it examines how variations in minimum wages influence unemployment rates, with a focus on demographic disparities among White, Black or African American, and Hispanic or Latino populations.</p>
+</section>
+<section id="methodology" class="level1">
+<h1>Methodology</h1>
+<section id="data-sources-and-cleaning" class="level3">
+<h3 class="anchored" data-anchor-id="data-sources-and-cleaning">Data Sources and Cleaning</h3>
+<p>To address the research question, data on minimum wages were obtained from LaborLawCenter, while unemployment data were sourced from the U.S. Bureau of Labor Statistics. The analysis involved:</p>
+<ul>
+<li><strong>Data Consolidation</strong>: Ten years of data from multiple datasets were merged using <code>pandas</code>, with minimum wage and unemployment rate data transformed into a long format for consistency.</li>
+<li><strong>Preprocessing</strong>: Formatting inconsistencies in Excel sheets across years necessitated additional preprocessing to standardize the data.</li>
+</ul>
+</section>
+<section id="data-integration" class="level3">
+<h3 class="anchored" data-anchor-id="data-integration">Data Integration</h3>
+<p>The cleaned datasets were merged by state, demographic group (race/ethnicity), and year to enable comprehensive analysis. This integration facilitated the examination of correlations between minimum wage changes and unemployment trends across various demographic groups.</p>
+</section>
+<section id="statistical-analysis-and-visualizations" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-analysis-and-visualizations">Statistical Analysis and Visualizations</h3>
+<p>The analysis employed both static and dynamic visualization techniques:</p>
+<ol type="1">
+<li><strong>Static Visualization</strong>:
+<ul>
+<li>Overall unemployment rate trends and trends in the top 10 states with the highest minimum wage variance were plotted using <code>Altair</code>.</li>
+<li>Scatterplots were created to depict the relationship between unemployment rates and minimum wages, with data from 2020 excluded to mitigate distortions caused by the COVID-19 pandemic.</li>
+<li>Regression analysis was conducted to assess the strength and direction of the relationship between minimum wages and unemployment rates.</li>
+</ul></li>
+<li><strong>Dynamic Visualization</strong>:
+<ul>
+<li>A Shiny app was developed using <code>GeoPandas</code> to visualize unemployment rates and minimum wages by state, enabling users to select specific years for exploration.</li>
+<li>A second Shiny app, built with <code>Altair</code>, allowed users to explore the relationship between minimum wages and unemployment rates by race (Black, White, Hispanic/Latino) within a selected state.</li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="challenges" class="level1">
+<h1>Challenges</h1>
+<p>Several challenges were encountered during the analysis:</p>
+<ol type="1">
+<li><strong>Formatting Inconsistencies</strong>: The Excel sheets for different years varied in structure, requiring extensive preprocessing to ensure data uniformity.</li>
+<li><strong>Graph Interpretation</strong>: The inclusion of all 50 states made the visualizations difficult to interpret. To improve clarity, representative states were selected for analysis.</li>
+<li><strong>Static Minimum Wages</strong>: Some states exhibited consistent minimum wages over the study period, complicating the assessment of their impact on unemployment rates.</li>
+<li><strong>Pandemic Effects</strong>: The anomalous effects of the COVID-19 pandemic in 2020 introduced distortions, necessitating the exclusion or adjustment of data from that year.</li>
+</ol>
+</section>
+<section id="static-plots" class="level1">
+<h1>Static Plots</h1>
+<section id="unemployment-rate-trends-in-states-with-high-minimum-wage-variance" class="level3">
+<h3 class="anchored" data-anchor-id="unemployment-rate-trends-in-states-with-high-minimum-wage-variance">Unemployment Rate Trends in States with High Minimum Wage Variance</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pictures/top10.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>Unemployment Rate Trends</figcaption>
+</figure>
+</div>
+<p><strong>Figure 1.</strong> Trends in unemployment rates from 2014 to 2024 for the top 10 states with the highest variance in minimum wages. Notable spikes are observed around 2020, likely reflecting the economic impacts of the COVID-19 pandemic.</p>
+</section>
+<section id="relationship-between-minimum-wage-and-unemployment-rate" class="level3">
+<h3 class="anchored" data-anchor-id="relationship-between-minimum-wage-and-unemployment-rate">Relationship Between Minimum Wage and Unemployment Rate</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pictures/regerssion.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>Regression Analysis</figcaption>
+</figure>
+</div>
+<p><strong>Figure 2.</strong> Scatterplot depicting the relationship between minimum wage and unemployment rate across states, with a fitted regression line. The negative slope suggests a slight inverse correlation between minimum wages and unemployment rates.</p>
+</section>
+</section>
+<section id="shiny-app-dynamic-plots" class="level1">
+<h1>Shiny App Dynamic Plots</h1>
+<section id="heatmap-of-unemployment-rates-and-minimum-wages-across-the-u.s." class="level2">
+<h2 class="anchored" data-anchor-id="heatmap-of-unemployment-rates-and-minimum-wages-across-the-u.s.">Heatmap of Unemployment Rates and Minimum Wages Across the U.S.</h2>
+<section id="minimum-wage-by-state" class="level3">
+<h3 class="anchored" data-anchor-id="minimum-wage-by-state">Minimum Wage by State</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pictures/min_wage.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>Minimum Wage Heatmap</figcaption>
+</figure>
+</div>
+<p><strong>Figure 3.</strong> Heatmap illustrating minimum wages by state for a selected year. The visualization highlights state-level differences in wage policies.</p>
+</section>
+<section id="unemployment-rate-by-state" class="level3">
+<h3 class="anchored" data-anchor-id="unemployment-rate-by-state">Unemployment Rate by State</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pictures/unem_rate.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>Unemployment Rate Heatmap</figcaption>
+</figure>
+</div>
+<p><strong>Figure 4.</strong> Heatmap showing unemployment rates by state for a selected year. This dynamic visualization allows users to compare state-level unemployment trends.</p>
+<p>The Shiny app integrates these visualizations, enabling users to dynamically compare unemployment rates and minimum wages across U.S. states by year. It provides insights into potential correlations and state-level trends.</p>
+</section>
+<section id="unemployment-rate-vs.-minimum-wage-by-state-and-race" class="level3">
+<h3 class="anchored" data-anchor-id="unemployment-rate-vs.-minimum-wage-by-state-and-race">Unemployment Rate vs.&nbsp;Minimum Wage by State and Race</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pictures/california.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>Unemployment Rate and Minimum Wage</figcaption>
+</figure>
+</div>
+<p><strong>Figure 5.</strong> Scatterplot of unemployment rates versus minimum wages for a selected state (e.g., California), disaggregated by racial groups (White, Black, and Hispanic/Latino). The app allows users to explore demographic-specific trends, highlighting the distinct effects of minimum wage policies.</p>
+</section>
+</section>
+</section>
+<section id="findings-and-policy-implications" class="level1">
+<h1>Findings and Policy Implications</h1>
+<p>Our analysis suggests that increases in minimum wage are generally associated with a decrease in unemployment rates. However, the magnitude and direction of this relationship vary by state and demographic group. Key findings include:</p>
+<ul>
+<li><strong>Demographic Differences</strong>: The unemployment rate is typically lower for White individuals. However, changes in minimum wage have a more pronounced effect on unemployment rates for Black or African American populations.</li>
+<li><strong>Policy Frequency</strong>: States with frequent changes in minimum wage policies exhibited more significant impacts on unemployment rates, suggesting that policy consistency may influence economic outcomes.</li>
+</ul>
+<section id="policy-implications" class="level3">
+<h3 class="anchored" data-anchor-id="policy-implications">Policy Implications</h3>
+<ul>
+<li><p><strong>Strengthening Support Systems for Vulnerable Groups</strong>: Since Black or African American workers experience greater effects from minimum wage changes, supportive measures are necessary to maximize benefits and minimize risks. Therefore, introduce targeted workforce development programs, such as subsidized job training, to help individuals from affected demographic groups transition to stable, higher-paying roles. Expand access to childcare and transportation for low-income families, addressing non-wage-related barriers to employment.</p></li>
+<li><p><strong>Regional and Sector-Specific Wage Policies</strong>: The variation in effects by state highlights the need for flexible policies that account for local economic conditions.</p></li>
+</ul>
+</section>
+</section>
+<section id="future-work" class="level1">
+<h1>Future Work</h1>
+<ul>
+<li><p><strong>Machine Learning Applications</strong>: Use advanced machine learning models, such as time series forecasting and classification algorithms, to predict unemployment trends under varying wage policy scenarios.</p></li>
+<li><p><strong>Add finacial measurement</strong>: Develop a predictable minimum wage growth plan, such as introducing incremental adjustments tied to inflation or productivity growth.</p></li>
+</ul>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>This project examines the relationship between minimum wage changes and unemployment rates in the U.S. from 2014 to 2024, emphasizing demographic and state-level variations. Our findings indicate a generally negative correlation between minimum wage increases and unemployment rates, with more pronounced effects on Black and Afircan American populations compared to White individuals. States with frequent policy changes demonstrated more noticeable impacts.</p>
+<p>These insights highlight the importance of designing wage policies that address regional and demographic disparities. Future research should investigate long-term trends, regional disparities, and the effects on vulnerable populations, employing advanced techniques like machine learning for enhanced predictive analyses.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
