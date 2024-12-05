@@ -1,7 +1,7 @@
 ---
 title: "Group13_final_project_writeup"
 author: "Group 13: Xinyi Chen & Ben Zhang (Section 1)"
-date: "2024-11-30"
+date: "2024-12-04"
 format: html
 ---
 
@@ -94,14 +94,16 @@ Our analysis suggests that increases in minimum wage are generally associated wi
 
 ### Policy Implications
 
-- Policymakers should account for state and demographic variability when designing minimum wage policies.
-- Targeted support for vulnerable groups, particularly Black and Hispanic/Latino populations, may mitigate potential adverse effects of wage policy changes.
+- **Strengthening Support Systems for Vulnerable Groups**: Since Black or African American workers experience greater effects from minimum wage changes, supportive measures are necessary to maximize benefits and minimize risks. Therefore, introduce targeted workforce development programs, such as subsidized job training, to help individuals from affected demographic groups transition to stable, higher-paying roles.
+Expand access to childcare and transportation for low-income families, addressing non-wage-related barriers to employment.
+
+- **Regional and Sector-Specific Wage Policies**: The variation in effects by state highlights the need for flexible policies that account for local economic conditions.
 
 # Future Work
 
-1. **Regional Trends**: Analyze regional differences in the impact of minimum wage policies, incorporating factors such as economic structure and local cost of living.
-2. **Vulnerable Populations**: Study the effects of minimum wage changes on specific groups, including younger workers, part-time employees, and non-citizens.
-3. **Machine Learning Applications**: Use advanced machine learning models, such as time series forecasting and classification algorithms, to predict unemployment trends under varying wage policy scenarios.
+- **Machine Learning Applications**: Use advanced machine learning models, such as time series forecasting and classification algorithms, to predict unemployment trends under varying wage policy scenarios.
+
+- **Add finacial measurement**: Develop a predictable minimum wage growth plan, such as introducing incremental adjustments tied to inflation or productivity growth.
 
 # Conclusion
 
