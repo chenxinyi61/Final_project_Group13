@@ -1,7 +1,7 @@
 ---
 title: "Group13_final_project_writeup"
 author: "Group 13: Xinyi Chen & Ben Zhang (Section 1)"
-date: "2024-12-04"
+date: "2024-12-07"
 format: html
 ---
 
@@ -21,6 +21,130 @@ To address the research question, data on minimum wages were obtained from Labor
 - **Data Consolidation**: Ten years of data from multiple datasets were merged using `pandas`, with minimum wage and unemployment rate data transformed into a long format for consistency.
 - **Preprocessing**: Formatting inconsistencies in Excel sheets across years necessitated additional preprocessing to standardize the data.
 
+
+```{python}
+#| eval: false
+#| include: false
+
+### Load raw Data
+
+import pandas as pd
+import os
+
+# Change directory for reproduce work
+directory = './Data'
+
+file_list = [
+    "table14full13.xlsx", "table14full14.xlsx", "table14full15.xlsx",
+    "table14full16.xlsx", "table14full17.xlsx", "table14full18.xlsx",
+    "table14full19.xlsx", "table14full20.xlsx", "table14full21.xlsx",
+    "table14full22.xlsx", "table14full23.xlsx"
+]
+
+all_data = []
+
+yellow_highlighted_groups = [
+    "White", "Black or African American", "Hispanic or Latino ethnicity"]
+
+for file_name in file_list:
+    # Extract year from the file name (e.g., "2013" from "table14full13.xlsx") asked chatGPT how to read the 10 Excel file
+    year = file_name.replace("table14full", "").replace(".xlsx", "")
+
+    file_path = os.path.join(directory, file_name)
+    excel_file = pd.ExcelFile(file_path)
+
+    sheet_name = excel_file.sheet_names[0]
+
+    df = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=5)
+
+# Asked chatGPT how to extract certain rows from the Excel
+    column_count = len(df.columns)
+    if column_count == 14:
+        df.columns = [
+            "FIPS_State_Code", "Group_Code", "State", "Group",
+            "Population", "Labor_Force", "Employment_Percentage",
+            "Number_Employed", "Population_Percentage", "Unemployment_Number",
+            "Unemployment_Rate", "Error_Range", "Extra1", "Extra2"
+        ]
+    elif column_count == 12:
+        df.columns = [
+            "FIPS_State_Code", "Group_Code", "State", "Group",
+            "Population", "Labor_Force", "Employment_Percentage",
+            "Number_Employed", "Population_Percentage", "Unemployment_Number",
+            "Unemployment_Rate", "Error_Range"
+        ]
+    else:
+        raise ValueError(f"Unexpected number of columns ({
+                         column_count}) in file {file_name}")
+
+    filtered_data = df[df["Group"].isin(yellow_highlighted_groups)]
+
+    filtered_data["Year"] = year
+
+    all_data.append(
+        filtered_data[["State", "Group", "Unemployment_Rate", "Year"]])
+
+final_data = pd.concat(all_data, ignore_index=True)
+
+output_file = os.path.join(directory, "unemployment_race_filtered_data.xlsx")
+final_data.to_excel(output_file, index=False)
+```
+
+```{python}
+#| eval: false
+#| include: false
+
+### Clean unemployment rate by state and year
+import pandas as pd
+
+file_path = './Data/State_unemployment_rates.xlsx'
+
+df_unemployment = pd.read_excel(file_path, sheet_name='Sheet1')
+
+df_unemployment.set_index("State", inplace=True)
+
+df_unemployment = df_unemployment.transpose()
+
+df_unemployment.index = pd.to_datetime(df_unemployment.index)
+
+# As the unemployment rate only has record till September 2024, asked chatGPT how to make the September data reoresent 2024
+df_december = df_unemployment[df_unemployment.index.month == 12]
+df_sep_2024 = df_unemployment[(df_unemployment.index.year == 2024) & (
+    df_unemployment.index.month == 9)]
+
+# Convert December index to year for easier understanding
+df_december.index = df_december.index.year
+
+if not df_sep_2024.empty:
+    df_sep_2024.index = [2024]
+    df_december = pd.concat([df_december, df_sep_2024])
+
+df_december = df_december.transpose()
+
+df_december.reset_index(inplace=True)
+df_december.rename(columns={"index": "State"}, inplace=True)
+
+output_file = './Data/Filtered_Unemployment_Data.xlsx'
+df_december.to_excel(output_file, index=False)
+
+print(f"Filtered unemployment rates (including Sep-24) saved to {output_file}")
+
+```
+
+```{python}
+#| eval: false
+#| include: false
+
+# Optional: Import cleaned data (easy to download this without go through all steps above)
+import pandas as pd
+
+unemployment_rate = pd.read_excel('./Data/Filtered_Unemployment_Data.xlsx')
+
+min_wage = pd.read_excel('./Data/Min_wage.xlsx')
+
+unemployment_rate_race = pd.read_excel(
+    './Data/unemployment_race_filtered_data.xlsx')
+```
 ###  Data Integration
 
 The cleaned datasets were merged by state, demographic group (race/ethnicity), and year to enable comprehensive analysis. This integration facilitated the examination of correlations between minimum wage changes and unemployment trends across various demographic groups.
@@ -37,6 +161,225 @@ The analysis employed both static and dynamic visualization techniques:
 2. **Dynamic Visualization**:
     - A Shiny app was developed using `GeoPandas` to visualize unemployment rates and minimum wages by state, enabling users to select specific years for exploration.
     - A second Shiny app, built with `Altair`, allowed users to explore the relationship between minimum wages and unemployment rates by race (Black, White, Hispanic/Latino) within a selected state.
+
+```{python}
+# | eval: false
+# | include: false
+
+# Plot unemployment rate by year for states with minimum wage change
+
+import altair as alt
+
+min_wage_long = min_wage.melt(
+    id_vars=['State'], var_name='Year', value_name='Min_Wage')
+min_wage_long['Min_Wage'] = min_wage_long['Min_Wage'].astype(float)
+
+unemployment_rate_long = unemployment_rate.melt(
+    id_vars=['State'], var_name='Year', value_name='Unemployment_Rate')
+
+merged_data = pd.merge(
+    min_wage_long, unemployment_rate_long, on=['State', 'Year'])
+
+min_wage_long['Min_Wage_Change'] = (
+    min_wage_long.groupby('State')['Min_Wage']
+    .transform(lambda x: x.diff().fillna(0).ne(0))
+)
+
+states_with_changes = min_wage_long[min_wage_long['Min_Wage_Change']].drop_duplicates(
+    subset='State')
+states_with_changes_list = states_with_changes['State'].tolist()
+
+# reference: convert a series to list
+# https://www.geeksforgeeks.org/python-pandas-series-tolist/
+
+final_data = merged_data[merged_data['State'].isin(states_with_changes_list)]
+
+
+chart = alt.Chart(final_data).mark_line(point=True).encode(
+    x='Year:O',
+    y='Unemployment_Rate:Q',
+    color='State:N',
+    tooltip=['State', 'Year', 'Unemployment_Rate']
+).properties(
+    title='Unemployment Rate Change for States with Minimum Wage Changes (2014-2024)',
+    width=500,
+    height=300
+)
+
+chart.show()
+```
+
+```{python}
+#| eval: false
+#| include: false
+
+### Plot unemployment rate by year for states with TOP 10 variance of minimum wage change
+
+state_variance = (
+    merged_data.groupby('State')['Min_Wage']
+    .var()
+    .reset_index()
+    .rename(columns={'Min_Wage': 'Variance'})
+)
+
+# Calculates the variance:
+# reference: https://www.codecademy.com/resources/docs/numpy/built-in-functions/variance
+
+top_states = state_variance.nlargest(10, 'Variance')['State']
+
+filtered_data = merged_data[merged_data['State'].isin(top_states)]
+
+chart = alt.Chart(filtered_data).mark_line(point=True).encode(
+    x='Year:O',
+    y='Unemployment_Rate:Q',
+    color='State:N',
+    tooltip=['State', 'Year', 'Unemployment_Rate']
+).properties(
+    title='Unemployment Rate Change for Top 10 States with Highest Variance of minimum wage (2014-2024)',
+    width=800,
+    height=400
+)
+
+chart.show()
+```
+
+```{python}
+#| eval: false
+#| include: false
+
+### Plot the relationship between unemployment rate and minimum wage for states with TOP 10 variance of minimum wage change
+
+filtered_data = merged_data[merged_data['State'].isin(top_states)]
+
+chart = alt.Chart(filtered_data).mark_line(point=True).encode(
+    x=alt.X('Min_Wage:Q', scale=alt.Scale(zero=False), title='Minimum Wage'),
+    y=alt.Y('Unemployment_Rate:Q', scale=alt.Scale(),
+            title='Unemployment Rate'),
+    color='State:N',
+    tooltip=['State', 'Year', 'Min_Wage', 'Unemployment_Rate']
+).properties(
+    title='Unemployment Rate vs. Minimum Wage (Top 20 States with Highest Variance)',
+    width=500,
+    height=400
+)
+
+chart.show()
+```
+
+```{python}
+#| eval: false
+#| include: false
+
+## Plot exclude year 2020
+
+filtered_data_no_2020 = filtered_data[filtered_data['Year'] != 2020]
+
+chart_no_2020 = alt.Chart(filtered_data_no_2020).mark_line(point=True).encode(
+    x=alt.X('Min_Wage:Q', scale=alt.Scale(zero=False), title='Minimum Wage'),
+    y=alt.Y('Unemployment_Rate:Q', scale=alt.Scale(
+        zero=False), title='Unemployment Rate'),
+    color='State:N',
+    tooltip=['State', 'Year', 'Min_Wage', 'Unemployment_Rate']
+).properties(
+    title='Unemployment Rate vs. Minimum Wage (Excluding 2020)',
+    width=800,
+    height=400
+)
+
+chart_no_2020.show()
+
+```
+
+```{python}
+#| eval: false
+#| include: false
+
+### Plot regression of unemployment rate and minimum wage without year 2020
+
+chart_with_regression = alt.Chart(filtered_data_no_2020).mark_circle(size=50, opacity=0.6).encode(
+    x=alt.X('Min_Wage:Q', scale=alt.Scale(zero=False), title='Minimum Wage'),
+    y=alt.Y('Unemployment_Rate:Q', scale=alt.Scale(
+        zero=False), title='Unemployment Rate'),
+    color='State:N',
+    tooltip=['State', 'Year', 'Min_Wage', 'Unemployment_Rate']
+).properties(
+    width=500,
+    height=300
+) + alt.Chart(filtered_data_no_2020).transform_regression(
+    'Min_Wage', 'Unemployment_Rate', method='linear'
+).mark_line(color='black').encode(
+    x='Min_Wage:Q',
+    y='Unemployment_Rate:Q'
+).properties(
+    title='Unemployment Rate vs. Minimum Wage (Regression Line Included)'
+)
+
+chart_with_regression.show()
+```
+
+```{python}
+#| eval: false
+#| include: false
+
+# Find realtionship between unemployment rate and minimum wage with race groups
+
+## merge data first
+min_wage_long['Year'] = min_wage_long['Year'].astype(int)
+
+unemployment_rate_race['Year'] = unemployment_rate_race['Year'] + 2000
+
+unemployment_filtered = unemployment_rate_race[
+    (unemployment_rate_race['Year'] >= 2014) & (
+        unemployment_rate_race['Year'] <= 2023)
+]
+
+merged_race_data = pd.merge(
+    unemployment_filtered,
+    min_wage_long,
+    on=['State', 'Year'],
+    how='inner'
+)
+
+print(merged_race_data.head())
+```
+
+```{python}
+#| eval: false
+#| include: false
+
+### Select one state to test trend and difference before we move to Shiny App
+### Not included in our final report due to intermidate process
+
+selected_state = "Arizona"
+state_data = merged_race_data[merged_race_data["State"] == selected_state]
+
+chart = alt.Chart(state_data).mark_circle(size=100).encode(
+    x=alt.X('Min_Wage:Q', title='Minimum Wage ($)'),
+    y=alt.Y('Unemployment_Rate:Q', title='Unemployment Rate (%)'),
+    color=alt.Color('Group:N', title='Race'),
+    tooltip=['Year', 'Unemployment_Rate', 'Min_Wage', 'Group']
+).properties(
+    title=f"Unemployment Rate vs Minimum Wage for {selected_state}",
+    width=400,
+    height=300
+)
+
+regression_lines = alt.Chart(state_data).transform_regression(
+    'Min_Wage', 'Unemployment_Rate', groupby=['Group']
+).mark_line().encode(
+    x=alt.X('Min_Wage:Q',scale=alt.Scale(zero=False),title='Minimum Wage ($)'),
+    y=alt.Y('Unemployment_Rate:Q', title='Unemployment Rate (%)'),
+    color=alt.Color('Group:N', title='Race')
+)
+
+# reference of add regression line:
+# https://altair-viz.github.io/user_guide/transform/regression.html 
+combined_chart = chart + regression_lines
+
+combined_chart.show()
+```
+
+
 
 # Challenges
 
